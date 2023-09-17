@@ -1,20 +1,42 @@
 import sqlite3
-from sqlite3 import Error
 
-class dbhelper:
-    def create_connection(db_file):
-        conn = None
-        try:
-            conn = sqlite3.connect(db_file)
-        except Error as e:
-            print(e)
+class SQLiteHelper:
+    def __init__(self, db_file):
+        self.db_file = db_file
+        self.connection = None
 
-        return conn
-    
-    def insert_new_user(conn, db):
-        sql = ''' INSERT INTO projects(name,begin_date,end_date)
-                VALUES(?,?,?) '''
-        cur = conn.cursor()
-        cur.execute(sql, db)
-        conn.commit()
-        return cur.lastrowid
+    def connect(self):
+        self.connection = sqlite3.connect(self.db_file)
+        self.connection.execute("PRAGMA foreign_keys = 1")  # Enable foreign key support
+
+    def disconnect(self):
+        if self.connection:
+            self.connection.close()
+            self.connection = None
+
+    def execute_query(self, query, parameters=None):
+        cursor = self.connection.cursor()
+        if parameters:
+            cursor.execute(query, parameters)
+        else:
+            cursor.execute(query)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+
+    def execute_update(self, query, parameters=None):
+        cursor = self.connection.cursor()
+        if parameters:
+            cursor.execute(query, parameters)
+        else:
+            cursor.execute(query)
+        self.connection.commit()
+        rows_affected = cursor.rowcount
+        cursor.close()
+        return rows_affected
+
+    def execute_script(self, script):
+        cursor = self.connection.cursor()
+        cursor.executescript(script)
+        self.connection.commit()
+        cursor.close()

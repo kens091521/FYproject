@@ -5,5 +5,5 @@ from django.urls import include
 urlpatterns = [
     path('admin/', admin.site.urls), # 別忘記逗點囉!
     path("client/", include("client.urls")), # 和多這一行
-    path(r'^admin/',admin.site.urls),
+  
 ]
