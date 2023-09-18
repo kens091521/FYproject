@@ -64,3 +64,6 @@ def signUp(request):
         model.objects.create(**insert_data)
         
         return HttpResponse("Data inserted successfully.")
+
+def index(request):
+    return render(request, 'index.html')

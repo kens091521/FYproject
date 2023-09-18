@@ -7,6 +7,8 @@
 import 'package:flutter/material.dart';
 import '../elements/FormButton.dart';
 import 'SignUp_page.dart';
+import 'home_page.dart';
+
 
 class SimpleLoginScreen extends StatefulWidget {
   /// Callback for when this form is submitted successfully. Parameters are (email, password)
@@ -69,6 +71,14 @@ class _SimpleLoginScreenState extends State<SimpleLoginScreen> {
       if (onSubmitted != null) {
         onSubmitted!(email, password);
       }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const SimpleRegisterScreen(),
+          settings: RouteSettings(name: '/home'), // 路由設定
+        ),
+      );
     }
   }
 
