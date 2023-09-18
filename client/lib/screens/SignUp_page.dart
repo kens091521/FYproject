@@ -1,24 +1,19 @@
-/*
-  Flutter UI
-  ----------
-  lib/screens/simple_login.dart
-*/
-
 import 'package:flutter/material.dart';
 import '../elements/FormButton.dart';
-import 'SignUp_page.dart';
 
-class SimpleLoginScreen extends StatefulWidget {
+
+class SimpleRegisterScreen extends StatefulWidget {
   /// Callback for when this form is submitted successfully. Parameters are (email, password)
   final Function(String? email, String? password)? onSubmitted;
 
-  const SimpleLoginScreen({this.onSubmitted, Key? key}) : super(key: key);
+  const SimpleRegisterScreen({this.onSubmitted, Key? key}) : super(key: key);
+
   @override
-  State<SimpleLoginScreen> createState() => _SimpleLoginScreenState();
+  State<SimpleRegisterScreen> createState() => _SimpleRegisterScreenState();
 }
 
-class _SimpleLoginScreenState extends State<SimpleLoginScreen> {
-  late String email, password;
+class _SimpleRegisterScreenState extends State<SimpleRegisterScreen> {
+  late String email, password, confirmPassword;
   String? emailError, passwordError;
   Function(String? email, String? password)? get onSubmitted =>
       widget.onSubmitted;
@@ -28,6 +23,7 @@ class _SimpleLoginScreenState extends State<SimpleLoginScreen> {
     super.initState();
     email = '';
     password = '';
+    confirmPassword = '';
 
     emailError = null;
     passwordError = null;
@@ -54,9 +50,15 @@ class _SimpleLoginScreenState extends State<SimpleLoginScreen> {
       isValid = false;
     }
 
-    if (password.isEmpty) {
+    if (password.isEmpty || confirmPassword.isEmpty) {
       setState(() {
         passwordError = 'Please enter a password';
+      });
+      isValid = false;
+    }
+    if (password != confirmPassword) {
+      setState(() {
+        passwordError = 'Passwords do not match';
       });
       isValid = false;
     }
@@ -81,26 +83,23 @@ class _SimpleLoginScreenState extends State<SimpleLoginScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ListView(
           children: [
-            SizedBox(height: screenHeight * .20),
+            SizedBox(height: screenHeight * .12),
             const Text(
-              'Hello!',
+              'Create Account,',
               style: TextStyle(
-                fontSize: 72,
+                fontSize: 48,
                 fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center,
             ),
             SizedBox(height: screenHeight * .01),
             Text(
-              'Sign in to your account',
+              'Sign up to get started!',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 20,
                 color: Colors.black.withOpacity(.6),
               ),
-              textAlign: TextAlign.center,
-
             ),
-            SizedBox(height: screenHeight * .07),
+            SizedBox(height: screenHeight * .12),
             InputField(
               onChanged: (value) {
                 setState(() {
@@ -121,49 +120,46 @@ class _SimpleLoginScreenState extends State<SimpleLoginScreen> {
                   password = value;
                 });
               },
-              onSubmitted: (val) => submit(),
               labelText: 'Password',
               errorText: passwordError,
               obscureText: true,
               textInputAction: TextInputAction.next,
               labelTextStyle: TextStyle(fontSize: 20),
+
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {},
-                child: const Text(
-                  'Forgot Password?',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+            SizedBox(height: screenHeight * .025),
+            InputField(
+              onChanged: (value) {
+                setState(() {
+                  confirmPassword = value;
+                });
+              },
+              onSubmitted: (value) => submit(),
+              labelText: 'Confirm Password',
+              errorText: passwordError,
+              obscureText: true,
+              textInputAction: TextInputAction.done,
+              labelTextStyle: TextStyle(fontSize: 20),
             ),
             SizedBox(
               height: screenHeight * .075,
             ),
             FormButton(
-              text: 'Log In',
+              text: 'Sign Up',
               onPressed: submit,
             ),
             SizedBox(
-              height: screenHeight * .03,
+              height: screenHeight * .125,
             ),
             TextButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const SimpleRegisterScreen(),
-                ),
-              ),
+              onPressed: () => Navigator.pop(context),
               child: RichText(
                 text: const TextSpan(
-                  text: "I'm a new user, ",
+                  text: "I'm already a member, ",
                   style: TextStyle(color: Colors.black),
                   children: [
                     TextSpan(
-                      text: 'Sign Up',
+                      text: 'Sign In',
                       style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
@@ -179,3 +175,4 @@ class _SimpleLoginScreenState extends State<SimpleLoginScreen> {
     );
   }
 }
+
